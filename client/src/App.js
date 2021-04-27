@@ -1,4 +1,4 @@
-import axios from 'axios';
+//import axios from 'axios';
 import React, {useState, useEffect} from 'react';
 
 const MusicArray = (props) => {
@@ -18,13 +18,15 @@ const MusicArray = (props) => {
 };
 
 const GetAll = () => {
-  const [musics, setMusics] = useState(null)
+  const [musics, setMusics] = useState([])
   useEffect(() => {
     fetch("https://mongo-hakulinen.herokuapp.com/api/getall")
       .then((results) => {
+        //console.log(results.json());
         return results.json();
+        
       })
-      .then((data) => {
+      .then(data => {
         console.log(data.musics)
         setMusics(data.musics)
       })
