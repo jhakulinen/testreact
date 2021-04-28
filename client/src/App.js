@@ -1,4 +1,4 @@
-//import axios from 'axios';
+import axios from 'axios';
 import React, {useState, useEffect} from 'react';
 
 // const MusicArray = (props) => {
@@ -42,7 +42,7 @@ import React, {useState, useEffect} from 'react';
 //     </>
 //   );
 // }
-
+//var x = 0;
 const GetData = () => {
   const [quotes, setQuotes] = useState(null)
   useEffect(() => {
@@ -89,9 +89,49 @@ const SitaattiTaulu = (props)=>{
 };
 
 
+const PostForm = () => {
+  const url="https://mongo-hakulinen.herokuapp.com/api/add"
+  const [data, setData] = useState({
+    artist:"",
+    title:""
+  })
+
+  const submit = (e) => {
+    e.preventDefault();
+    axios.post(url, {
+      artist: data.artist,
+      title: data.title
+    })
+    .then(res=>{
+      console.log(res.data)
+    })
+  }
+
+  const handle = (e) => {
+    const newdata = {...data}
+    newdata[e.target.id] = e.target.value
+    setData(newdata)
+    console.log(newdata)
+  }
+
+
+
+  return (
+    <div>
+      <form onSubmit={(e)=> submit(e)}>
+        <input onChange={(e)=>handle(e)} id="artist" value={data.artist} placeholder="Artist" type="text"></input>
+        <input onChange={(e)=>handle(e)} id="title" value={data.title} placeholder="Song title" type="text"></input>
+        <button>Submit</button>
+      </form>
+    </div>
+  )
+}
+
+
 const App = () => {
   return(
     <>
+      <PostForm />
       <GetData />
     </>
   )
