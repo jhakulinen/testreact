@@ -1,61 +1,17 @@
 import axios from 'axios';
 import React, {useState, useEffect} from 'react';
 
-// const MusicArray = (props) => {
-//   const { data } = props;
-//   var i = 0;
-//   return (
-//     <div>
-//       <ul>
-//         {data.map((item) => (
-//           <li key={i++}>
-//             {item.artist} ( {item.title} )
-//           </li>
-//         ))}
-//       </ul>
-//     </div>
-//   );
-// };
-
-// const GetAll = () => {
-//   const [musics, setMusics] = useState(null)
-//   useEffect(() => {
-//     fetch("https://mongo-hakulinen.herokuapp.com/api/getall")
-//       .then((results) => {
-//         //console.log(results.json());
-//         return results.json();
-        
-//       })
-//       .then((data) => {
-//         console.log(data)
-//         setMusics(data)
-//       })
-//   }, [])
-
-//   return (
-//     <>
-//       {
-//         musics ?
-//           <MusicArray musics={musics}/>
-//           : <div>Nothing here. Fetching data...</div>
-//       }
-//     </>
-//   );
-// }
-//var x = 0;
+//Tehdään AJAX-pyyntö, jolla haetaan kaikki data APIsta.
 const GetData = () => {
-  const [quotes, setQuotes] = useState(null)
+  const [music, setMusic] = useState(null)
   useEffect(() => {
-   // fetch("https://api.jsonbin.io/b/5e9ef7272940c704e1dc1099%22)
     fetch("https://mongo-hakulinen.herokuapp.com/api/getall")
       .then((results) => {
         return results.json();
       })
       .then((data) => {
-        //console.log(data.quotes)
         console.log(data)
-        //setQuotes(data.quotes)
-        setQuotes(data)
+        setMusic(data)
       })
   }, [])
 
@@ -63,8 +19,8 @@ const GetData = () => {
     // Tässä käytetään ns. fragmentteja, eli palautetaan tulosjoukko ilman ympäröivää DIV-elementtiä
     <> 
       {
-        quotes ?
-          <SitaattiTaulu data={quotes} />
+        music ?
+          <MusicArray data={music} />
           : <div>Nothing here.Fething data...</div>
       }
     </> // fragmenttien lopetustägi
@@ -72,14 +28,16 @@ const GetData = () => {
 }
 
 
-const SitaattiTaulu = (props)=>{
+const MusicArray = (props)=>{
   const {data}=props;
   var i = 0;
+
+  //Lisätään APIsta saatu data listaan.
   return (
     <div>
-      <ul>
+      <ul className="list-group">
         {data.map((item)=>(
-        <li key={i++}>
+        <li key={i++} className="list-group-item list-group-item-secondary" style={{textAlign: 'center'}}>
           {item.title} ({item.artist})
         </li>
         ))}
@@ -88,7 +46,7 @@ const SitaattiTaulu = (props)=>{
   )
 };
 
-
+//Tehdään AJAX-pyyntö, jolla lisätään APIin dataa tekstilomakkeesta.
 const PostForm = () => {
   const url="https://mongo-hakulinen.herokuapp.com/api/add"
   const [data, setData] = useState({
@@ -114,14 +72,19 @@ const PostForm = () => {
     console.log(newdata)
   }
 
-
-
+//Lomake, johon on lisätty onSubmit-toiminto, joka ajaa AJAX POSTin.
   return (
     <div>
       <form onSubmit={(e)=> submit(e)}>
-        <input onChange={(e)=>handle(e)} id="artist" value={data.artist} placeholder="Artist" type="text"></input>
-        <input onChange={(e)=>handle(e)} id="title" value={data.title} placeholder="Song title" type="text"></input>
-        <button>Submit</button>
+        <div className="form-group">
+          <label htmlFor="artist">Artist</label>
+          <input onChange={(e)=>handle(e)} className="form-control" id="artist" value={data.artist} placeholder="Enter artist" type="text"></input>
+        </div>
+        <div className="form-group">
+          <label htmlFor="title">Title</label>
+          <input onChange={(e)=>handle(e)} className="form-control" id="title" value={data.title} placeholder="Enter song title" type="text"></input>
+        </div>
+        <button type="submit" className="btn btn-primary">Submit</button>
       </form>
     </div>
   )
@@ -133,7 +96,10 @@ const App = () => {
     <>
       <PostForm />
       <GetData />
+      
     </>
   )
 }
+
+
 export default App;
